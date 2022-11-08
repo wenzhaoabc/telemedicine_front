@@ -1,6 +1,11 @@
 # TeleMedicine
+*工具链*
 
 Vue3 + Vite + VueRouter + pinia + Arco Design
+
+*注意*
+
+代码提交到自己建的新分支，master分支用于合并，不要push到这个分支
 
 ## Recommended IDE Setup
 
