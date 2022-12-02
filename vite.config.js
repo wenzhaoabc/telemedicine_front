@@ -12,6 +12,7 @@ export default defineConfig({
     }
   },
   server: {
+    hmr:true,
     // 代理服务器，解决浏览器跨域问题
     proxy: {
       '/api': {
@@ -25,5 +26,7 @@ export default defineConfig({
         rewrite: (path) => path.replace('/^\/api/', '')
       }
     }
-  }
+  },
 })
+
+
