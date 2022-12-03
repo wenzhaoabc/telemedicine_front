@@ -1,7 +1,7 @@
 <template>
-    <div style="margin:0">
-        <p class="time">{{singleMsg.time}}</p>
-        <div class="message-item flex" :class="{'me':singleMsg.me,'other':!singleMsg.me}">
+    <div style="margin:0" @click="test">
+        <p class="time">{{singleMsg.createTime}}</p>
+        <div class="message-item flex" :class="{'me':singleMsg.senderId==info.actorId,'other':singleMsg.senderId!=info.actorId}">
             <div class="avator-box hvhd">
                 <a-avatar :size="30">A</a-avatar>
             </div>
@@ -9,12 +9,13 @@
             <div class="message-box flex_column">
                 <div class="cardcontain" style="text-align: right;">
                     <div>
-                        <div class="bubble_arrow absolute" :class="{'right':singleMsg.me,'left':!singleMsg.me}">
+                        <div class="bubble_arrow absolute" :class="{'right':singleMsg.senderId==info.actorId,'left':singleMsg.senderId!=info.actorId}">
                         </div>
-                        <div class="bubble_cont" :class="{'bcright':singleMsg.me,'bcleft':!singleMsg.me}">
+                        <div class="bubble_cont" :class="{'bcright':singleMsg.senderId==info.actorId,'bcleft':singleMsg.senderId!=info.actorId}">
                             <div class="card1">
-                                <p class="wordbreak puretext" v-if="singleMsg.type==1">{{singleMsg.msg}}</p>
-                                <audio :src="singleMsg.msg" id="aud" ref="audio" controls="controls" v-if="singleMsg.type==2"></audio>
+                                <p class="wordbreak puretext" v-if="(singleMsg.kind==0)">{{singleMsg.value}}</p>
+                                <img :src="singleMsg.value" v-if="(singleMsg.kind==1)" style="width:100px" >
+                                <audio :src="singleMsg.value" id="aud" ref="audio" controls="controls" v-if="(singleMsg.kind==2)"></audio>
                             </div>
                         </div>
                     </div>
@@ -25,16 +26,25 @@
 </template>
 
 <script lang="ts" setup>
-import {ref} from 'vue'
+import {ref,onMounted,toRefs} from 'vue'
+import { userInfo } from '@/stores/counter.js';
+
+const info=userInfo();
+
+
 // const me=ref(true);
-defineProps({
+const props = defineProps({
   singleMsg: {
-    me:Boolean,
-    type:Number,
-    msg:String,
-    time:Date
+    senderId:Number,
+    kind:Number,
+    value:String,
+    createTime:Date,
   }
 })
+const {singleMsg} = toRefs(props)
+function test(){
+    console.log(props.singleMsg.senderId);
+}
 </script>
 
 <style>

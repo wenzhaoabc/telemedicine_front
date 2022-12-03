@@ -14,6 +14,10 @@
                     医生所属医院/部门
                 </div>
             </div>
+            <div class="hcqStyle2" style="margin-top:10px">
+                <div style="font-weight:bold; display: inline">平均评分:</div>
+                <span>5.0</span>
+            </div>
             <div class="fontstyle" style="margin-top:20px">
                 <div style="font-weight:bold; display: inline">
                     个人简介:
@@ -33,7 +37,7 @@
                 <span>11111111111</span>
             </div>
             <div class="bottom">
-                <a-button type="primary" status="danger">结束咨询</a-button>
+                <a-button type="primary" status="danger" style="width:100%">结束咨询</a-button>
             </div>
         </div>
     </div>
@@ -46,11 +50,11 @@ const usertype=ref(true);
 
 <style scoped>
 .bottom{
-    position: absolute;
-    bottom: 1%;
-    margin:0 auto;
-    width:50px;
-    left:135px;
+    position: fixed;
+    bottom:2%;
+    /* margin:0 auto; */
+    width:290px;
+    /* left:10px */
 }
 .hcqStyle2{
     display:inline-block;
@@ -62,15 +66,16 @@ const usertype=ref(true);
     font-size:20px;
     text-align: center;
     width:100%;
+    font-family: "宋体";
 }
 
 .fontstyle{
     color:#e6e6e6;
-    font-family:"微软雅黑","黑体","宋体";
-    font-size:15px;
+    font-family:"楷体","黑体","宋体";
+    font-size:16px;
     line-height: 20px;
     text-align: center;
-    max-height:100px;
+    max-height:120px;
     overflow-y:auto;
     overflow-x:hidden ;
 }

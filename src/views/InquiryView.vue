@@ -11,6 +11,7 @@
 import SideBar from '@/components/chat/Sidebar.vue';
 import MainForm from '@/components/chat/MainForm.vue';
 
+
 </script>
 
 <style scoped>

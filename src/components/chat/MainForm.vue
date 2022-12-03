@@ -8,8 +8,14 @@
                     </div>
                 </header>
                 <a-divider size="5px" style="margin:0;"/>
-                <div v-for="item in message">
-                    <Message :singleMsg="item"></Message>
+                <div class="message-wrapper">
+                    <div class="mbjsk" id="scrollDiv">
+                        <div class="panel">
+                            <div v-for="item in message">
+                                <MyMessage :singleMsg="item"></MyMessage>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <RecordingAnim v-show="recordData.showAnima" style="position:absolute; bottom:30px;left:0;right:0"></RecordingAnim>
@@ -49,14 +55,50 @@
 </template>
 
 <script lang="ts" setup>
-import Message from '@/components/chat/Message.vue'
+import MyMessage from '@/components/chat/Message.vue'
 import RecordingAnim from './RecordingAnim.vue'
 import Recorder from 'js-audio-recorder'
 import Emoji from "./Emoji.vue"
-import {ref,reactive,toRefs} from 'vue'
+import {ref,reactive,toRefs,onMounted} from 'vue'
+import { sendTextMessage,getMessage,sendPictureMessage,sendAudioMessage } from '@/api/inquiry.js';
+import { userInfo } from '@/stores/counter.js';
+import { Message } from '@arco-design/web-vue'
+
+const info=userInfo();
 
 const text=ref("")
 const message=ref([])
+
+onMounted(()=>{
+    document.onkeydown = () => {
+        var key = window.event.keyCode
+        if (key === 13) {
+            sendMsg();
+        }
+    }
+
+    getMessage(1).then(response=>{
+        if(response.status==200){
+            message.value=response.data
+            scrollToBottom()
+            console.log("获得消息成功")
+        }
+        else{
+            console.log("获得消息失败")
+        }
+    }).catch(e=>{
+        console.log(e)
+        console.log("获得消息失败")
+    })
+})
+
+//滚动条滚动到低端
+function scrollToBottom() {
+    var ele = document.getElementById("scrollDiv");
+    setTimeout(function () {
+    ele.scrollTop = ele.scrollHeight;
+    }, 200);
+}
 
 //表情包
 const getEmoji=ref(null)
@@ -81,13 +123,46 @@ function changeText() {
     // console.log(this.$refs.getEmoji.faceList[this.$refs.getEmoji.emojiItem]);
 }
 
+
+//发送文本消息
+function sendMsg(){
+    let receiverId=1
+    sendTextMessage(receiverId,text.value).then(response=>{
+        if(response.status==200){
+            text.value="";
+            message.value.push(response.data)
+            scrollToBottom()
+        }
+        else{
+            console.log("发送消息失败")
+        }
+    }).catch(e=>{
+        console.log(e);
+    })
+
+}
+
 //图片上传
 const uploadRef = ref();
-const files = ref([]);
 
 function onChange(fileList){
-    files.value = fileList;
-    uploadRef.value.submit();
+    let receiverId=1;
+    let fd=new FormData()
+    console.log(fileList[0].file)
+    fd.append('file',fileList[0].file);
+    sendPictureMessage(receiverId,fd).then(response=>{
+        if(response.status==200){
+            console.log("发送图片成功")
+            message.value.push(response.data);
+        }
+        else{
+            console.log("发送图片失败");
+        }
+    }).catch(e=>{
+        console.log(e);
+        console.log("发送图片失败")
+    })
+    // uploadRef.value.submit();
 };
 
 //语音输入
@@ -122,34 +197,20 @@ const recordData = reactive({
     //此处获取到blob对象后需要设置fileName满足当前项目上传需求，其它项目可直接传把blob作为		  file塞入formData
     //formData是传给后端的对象,
     formData.append('file', file)
-    //计算出录音时长
-    recordData.duration = Math.ceil((new Date() - recordData.duration) / 1000);
-    console.log(recordData.duration);
+
     //发送给后端的方法
-    testAudio(formData).then(res => {
-    console.log(res);
-    })
-    console.log(blob)
-    var audio = document.getElementById('aud')
-    audio.src = URL.createObjectURL(blob)
-    audio.load()
-  },
-  // 录音按钮的点击事件
-  voice () {
-    //实例化语音对象
-    recordData.recorder = new Recorder({
-      sampleBits: 16, // 采样位数，支持 8 或 16，默认是16
-      sampleRate: 11025, // 采样率，支持 11025、16000、22050、24000、44100、48000，根据浏览器默认值，我的chrome是48000
-      numChannels: 1 // 声道，支持 1 或 2， 默认是1
-    })
-    //记录开始录音的时间
-    recordData.duration = new Date();
-    Recorder.getPermission().then(() => {
-      console.log('开始录音')
-      recordData.showAnima=true;
-      recordData.recorder.start() // 开始录音
-    }, (error) => {
-      console.log(`${error.name} : ${error.message}`)
+    let receiverId=1
+    sendAudioMessage(receiverId,formData).then(response=>{
+        if(response.status==200){
+            message.value.push(response.data)
+            console.log("发送语音成功")
+        }
+        else{
+            console.log("发送语音失败")
+        }
+    }).catch(e=>{
+        console.log(e)
+        console.log("发送语音失败")
     })
   },
   handleStop () {
@@ -170,15 +231,7 @@ const recordData = reactive({
   },
   clickRecord(){
     if(recordData.showAnima){
-        recordData.recorder.pause() // 暂停录音
-        var blob = recordData.recorder.getWAVBlob()//获取wav格式音频数据
-        var msg = URL.createObjectURL(blob)
-        message.value.push({
-            me:true,
-            type:2,
-            msg:msg,
-            time:new Date()
-        })
+        recordData.submit();
         // recordData.handleDestroy()
     }
     else{
@@ -204,6 +257,33 @@ defineExpose({
 </script>
 
 <style scoped> 
+.panel{
+    position: relative;
+    box-sizing: border-box;
+    height: 100%;
+    margin-right: -18px;
+
+}
+
+.mbjsk{
+    height: 100%;
+    width: 100%;
+    padding: 0px;
+    position: relative;
+    overflow-y: auto;
+    overflow-x:hidden;
+    
+}
+
+.message .message-wrapper{
+    position: absolute;
+    left: 0;
+    top: 55px;
+    right: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    flex: 1;
+}
 .icon_color{
     color:#333 !important;
 }
@@ -298,12 +378,11 @@ textarea:focus{
     border-bottom-color: darkcyan; */
 }
 .message{
-    overflow: hidden;
     position: absolute;
     top: 0;
     right: 0;
     left: 0;
-    bottom: 155px;
+    bottom: 190px;
 } 
 .right {
     width: 830px;

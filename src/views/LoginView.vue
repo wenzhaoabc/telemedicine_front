@@ -77,6 +77,8 @@
   
 <script>
 import { reactive } from 'vue';
+import { userInfo } from '@/stores/counter.js';
+
 import axios from "axios"
 export default {
   setup() {
@@ -87,9 +89,10 @@ export default {
       btnTitle: '获取验证码',
       disabled: false
     })
-
+    const loginStore=userInfo();
     return {
       form,
+      loginStore
     }
   },
   methods: {
@@ -158,6 +161,7 @@ export default {
           }).then((res) => {
             if (res.data) {
               console.log(res.data)
+              
             }
             else {
               this.errmsg = "手机号不存在！"
@@ -239,6 +243,8 @@ export default {
         if (res.data) {
           this.$message.success("登录成功！")
           console.log(res.data)
+          console.log(this.loginStore)
+          this.loginStore.changeLoginState(res.data)
           this.$router.push('/')
         }
         else {

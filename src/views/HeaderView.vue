@@ -109,7 +109,7 @@ export default {
 
 .layout-body {
   width: 100%;
-  background-image: url("../src/assets/20210629124327_48437.jpg");
+  /* background-image: url("../src/assets/20210629124327_48437.jpg"); */
   background-size: 100% 100%;
   height: 100%;
 }
