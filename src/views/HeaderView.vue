@@ -1,6 +1,5 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
-// import Header from "./components/Header.vue";
 export default {
   setup() {
     const images = [
@@ -39,25 +38,22 @@ export default {
       <div class="header-link">
         <a-link src="#" class="page-tag">Home</a-link>
         <a-link src="#" class="page-tag">Serch</a-link>
-        <a-link href="inquiry" class="page-tag">INquiry</a-link>
+        <a-link src="#" class="page-tag">INquiry</a-link>
         <a-link src="#" class="page-tag">Doctor</a-link>
         <a-avatar :style="{ backgroundColor: '#3370ff', marginRight: '60px' }">
           <IconUser />
         </a-avatar>
       </div>
     </a-layout-header>
-    <a-layout-content>
+ <!--    <a-layout-content>
       <div class="layout-body">
-        <ChooseDoctor />
+
       </div>
-    </a-layout-content>
+    </a-layout-content> -->
+    <router-view></router-view>
   </a-layout>
-
+  <router-view></router-view>
 </template>
-
-<script  setup>
-import ChooseDoctor from "./ChooseDoctorView.vue"
-</script>
 
 <style>
 .layout-main {

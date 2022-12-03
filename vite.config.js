@@ -12,11 +12,12 @@ export default defineConfig({
     }
   },
   server: {
+    hmr:true,
     // 代理服务器，解决浏览器跨域问题
     proxy: {
       '/api': {
         // 后端服务器API访问地址
-        target: 'http://backendserver.com:8080',
+        target: "http://localhost:8080/",
         // 请求host是否改变端口，默认true
         changeOrigin: true,
         // 是否支持websocket，，默认true
@@ -25,5 +26,7 @@ export default defineConfig({
         rewrite: (path) => path.replace('/^\/api/', '')
       }
     }
-  }
+  },
 })
+
+
