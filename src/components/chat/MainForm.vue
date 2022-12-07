@@ -59,11 +59,16 @@ import MyMessage from '@/components/chat/Message.vue'
 import RecordingAnim from './RecordingAnim.vue'
 import Recorder from 'js-audio-recorder'
 import Emoji from "./Emoji.vue"
-import {ref,reactive,toRefs,onMounted} from 'vue'
+import {ref,reactive,toRefs,onMounted,onUpdated} from 'vue'
 import { sendTextMessage,getMessage,sendPictureMessage,sendAudioMessage } from '@/api/inquiry.js';
 import { userInfo } from '@/stores/counter.js';
 import { Message } from '@arco-design/web-vue'
-
+const props = defineProps({
+    id:{
+        doctorId:Number
+    }
+})
+const {id} = toRefs(props)
 const info=userInfo();
 
 const text=ref("")
@@ -76,8 +81,14 @@ onMounted(()=>{
             sendMsg();
         }
     }
+    setTimeout(function(){
+        getMsg();
+    },200)
+    
+})
 
-    getMessage(1).then(response=>{
+function getMsg(){
+    getMessage(id.value.doctorId).then(response=>{
         if(response.status==200){
             message.value=response.data
             scrollToBottom()
@@ -90,13 +101,14 @@ onMounted(()=>{
         console.log(e)
         console.log("获得消息失败")
     })
-})
+}
+
 
 //滚动条滚动到低端
 function scrollToBottom() {
     var ele = document.getElementById("scrollDiv");
     setTimeout(function () {
-    ele.scrollTop = ele.scrollHeight;
+        ele.scrollTop = ele.scrollHeight;
     }, 200);
 }
 
@@ -126,8 +138,8 @@ function changeText() {
 
 //发送文本消息
 function sendMsg(){
-    let receiverId=1
-    sendTextMessage(receiverId,text.value).then(response=>{
+    console.log(id.value)
+    sendTextMessage(id.value.doctorId,text.value).then(response=>{
         if(response.status==200){
             text.value="";
             message.value.push(response.data)
@@ -146,11 +158,10 @@ function sendMsg(){
 const uploadRef = ref();
 
 function onChange(fileList){
-    let receiverId=1;
     let fd=new FormData()
     console.log(fileList[0].file)
     fd.append('file',fileList[0].file);
-    sendPictureMessage(receiverId,fd).then(response=>{
+    sendPictureMessage(id.value.doctorId,fd).then(response=>{
         if(response.status==200){
             console.log("发送图片成功")
             message.value.push(response.data);
@@ -199,8 +210,7 @@ const recordData = reactive({
     formData.append('file', file)
 
     //发送给后端的方法
-    let receiverId=1
-    sendAudioMessage(receiverId,formData).then(response=>{
+    sendAudioMessage(id.value.doctorId,formData).then(response=>{
         if(response.status==200){
             message.value.push(response.data)
             console.log("发送语音成功")

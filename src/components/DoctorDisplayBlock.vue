@@ -4,30 +4,30 @@
             <div class="card-inner">
                 <a href="#">
                     <a-avatar :size="70" style="border: 1px solid #E5F2FE;margin-top:10px">
-                        <img  src="https://kano.guahao.cn/4PK2675026_image140.jpg?timestamp=1634914492116" alt="">
+                        <img  :src="doctorInfo.photo" alt="">
                     </a-avatar>
                 </a>
                 <p class="doctor-name">
-                    李善群
+                    {{doctorInfo.name}}
                     <i>主任医师</i>
                 </p>
-                <p> 男 55 </p>
+                <p> <span v-if="(doctorInfo.gender==1)">男</span> <span v-if="(doctorInfo.gender==0)">女</span> <span style="margin-left:10px">{{doctorInfo.age}} </span> </p>
                 <p>
-                    复旦大学附属中山医院
+                    {{doctorInfo.hospital}}
                 </p>
                 <p class="doctor-consult">
                     <span class="star">评分 
-                        <em>9.3</em>
+                        <em>{{doctorInfo.score}}</em>
                     </span>
                     
                     <span>医龄 </span>
-                    <i>25</i>
+                    <i>{{doctorInfo.seviceYear}}</i>
                 </p>
                 <p class="doctor-good">
-                    擅长：1、慢阻肺康复及鼾症的诊治；2、气管支气管炎、肺巴拉巴拉      
+                    擅长：{{doctorInfo.field}}    
                 </p>
                 <div class="doctor-service">
-                    <a-button :loading="loading2" @click="handleClick2" class="infos">
+                    <a-button :loading="loading2" @click="openModel" class="infos">
                         <template #icon>
                             <icon-language />
                         </template>
@@ -42,11 +42,46 @@
                 </div>
             </div>
         </div>
+
+        <a-modal v-model:visible="visible" @ok="handleOk" @cancel="handleCancel">
+            <template #title>
+            为了更好地开展咨询，请先花一点时间填写下个人状况
+            </template>
+            <div>
+                <a-textarea :auto-size="{minRows:2,maxRows:5}" placeholder="请描述病症状况，尽量详细但不要超过500个字" :max-length="500" allow-clear/>
+            </div>
+        </a-modal>
     </div>
 </template>
 
-<script setup>
-
+<script lang="ts" setup>
+import {toRefs,ref} from 'vue'
+import { useRouter } from 'vue-router';
+const props = defineProps({
+  doctorInfo: {
+    name:String,
+    actorId:Number,
+    telephone:String,
+    age:Number,
+    gender:Number,
+    department:String,
+    seviceYear:Number,
+    hospital:String,
+    introduction:String,
+    field:String,
+    score:Number,
+    photo:String
+  }
+})
+const {doctorInfo} = toRefs(props)
+const visible=ref(false)
+function openModel(){
+    visible.value=true;
+}
+const router = useRouter();
+function handleOk(){
+    router.push({name:'inquiry',query:{doctorId:doctorInfo.value.actorId}})
+}
 </script>
 
 <style scoped>

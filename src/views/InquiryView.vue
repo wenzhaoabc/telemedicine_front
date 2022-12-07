@@ -2,7 +2,7 @@
     <div class="chat">
         <div class="chatbox">
             <SideBar></SideBar>
-            <MainForm></MainForm>
+            <MainForm :id=doctorId></MainForm>
         </div>
     </div>
 </template>
@@ -10,7 +10,14 @@
 <script lang="ts" setup>
 import SideBar from '@/components/chat/Sidebar.vue';
 import MainForm from '@/components/chat/MainForm.vue';
-
+import { onMounted,ref } from 'vue'
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const doctorId=ref(null);
+onMounted(()=>{
+    doctorId.value={doctorId:router.currentRoute.value.query.doctorId};
+    console.log(doctorId.value);
+})
 
 </script>
 

@@ -20,7 +20,10 @@
             </div>
             <a-tabs type="card" trigger="hover" style="margin-top:20px">
                     <a-tab-pane v-for="(item, index) of department" :key="index" :title="item">
-                        <ChooseDoctor v-for="i of 8" :key="i"></ChooseDoctor>
+                        <div  v-for="(doctor,index) of doctors" >
+                            <ChooseDoctor :key="index" :doctorInfo="doctor" v-if="(doctor.department==item)" ></ChooseDoctor>
+                        </div>
+                        
                     </a-tab-pane>
             </a-tabs>
             
@@ -29,9 +32,28 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {ref,onMounted} from 'vue'
 import ChooseDoctor from '@/components/DoctorDisPlayBlock.vue'
+import { getDoctors } from '@/api/personalInfo.js'
 const department=ref(['内科','外科','妇产科','儿科','皮肤科','耳鼻咽喉科','眼科','口腔科','精神科','中医科'])
+
+const doctors=ref([])
+onMounted(()=>{
+    getDoctors().then(response=>{
+        if(response.status==200){
+            doctors.value=response.data;
+            console.log(doctors.value)
+            console.log("获取医生信息成功")
+        }
+        else{
+            console.log("获取医生信息失败")
+        }
+    }).catch(e=>{
+        console.log(e)
+        console.log("获取医生信息失败")
+    })
+})
+
 </script>
 
 <style>
