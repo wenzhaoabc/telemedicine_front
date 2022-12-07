@@ -62,7 +62,8 @@ import Emoji from "./Emoji.vue"
 import {ref,reactive,toRefs,onMounted,onUpdated} from 'vue'
 import { sendTextMessage,getMessage,sendPictureMessage,sendAudioMessage } from '@/api/inquiry.js';
 import { userInfo } from '@/stores/counter.js';
-import { Message } from '@arco-design/web-vue'
+import { Message } from '@arco-design/web-vue';
+import bus from '@/utils/eventBus.js'
 const props = defineProps({
     id:{
         doctorId:Number
@@ -86,7 +87,45 @@ onMounted(()=>{
     },200)
     
 })
+var ws=null;
+setTimeout(()=>{
+    ws = new WebSocket(
+        `ws://localhost:8080/imserver/`+info.actorId
+    )
+    ws.onopen=function(){
+        sendMessage()
+    }
+    ws.onmessage = function (e) {
+        let jsondata=eval('('+e.data+')')
+        console.log("服务器返回的信息: " + e.data);
+        if (info.role==1&&jsondata.contentText=="first") {
+            id.value.doctorId=jsondata.fromUserId;
+            bus.emit('idChange',id.value.doctorId)
+            console.log(id.value.doctorId)
+        }
+    };
+    ws.onclose = function () {
+        
+    };
+},200)
 
+function sendMessage(){
+    ws.send('{"toUserId":"' + id.value.doctorId + '","contentText":"' + "first" + '"}');
+}
+
+//websockt
+
+// 
+
+// ws.onopen = function(evt) { 
+//   console.log("Connection open ..."); 
+//   ws.send("Hello WebSockets!");
+// };
+
+// ws.onclose = function(evt) {
+//   console.log("Connection closed.");
+// };    
+//获得消息
 function getMsg(){
     getMessage(id.value.doctorId).then(response=>{
         if(response.status==200){

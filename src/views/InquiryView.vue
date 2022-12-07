@@ -1,7 +1,7 @@
 <template>
     <div class="chat">
         <div class="chatbox">
-            <SideBar></SideBar>
+            <SideBar :id=doctorId></SideBar>
             <MainForm :id=doctorId></MainForm>
         </div>
     </div>

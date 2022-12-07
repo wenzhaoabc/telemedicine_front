@@ -13,6 +13,7 @@
 </template>
 <script>
 import appData from "../../utils/emoji"
+
 export default {
     mounted() {
         for (let i in appData) {
