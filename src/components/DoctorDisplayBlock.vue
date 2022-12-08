@@ -43,20 +43,28 @@
             </div>
         </div>
 
-        <a-modal v-model:visible="visible" @ok="handleOk" @cancel="handleCancel">
+        <a-modal v-model:visible="visible" @ok="handleOk" @cancel="handleCancel" :footer=false>
             <template #title>
             为了更好地开展咨询，请先花一点时间填写下个人状况
             </template>
             <div>
-                <a-textarea :auto-size="{minRows:2,maxRows:5}" placeholder="请描述病症状况，尽量详细但不要超过500个字" :max-length="500" allow-clear/>
+                <a-textarea v-model="problem" :auto-size="{minRows:2,maxRows:5}" placeholder="请描述病症状况，尽量详细但不要超过500个字" :max-length="500" allow-clear/>
+            </div>
+            <div style="width:100%">
+                <div v-if="!idle" style="color:red;text-align:center;margin-top:10px">该医生当前不是空闲状态，无法咨询，请等等再来咨询或者换一个医生</div>
+                <div v-if="idle" style="margin:0 auto;width:60px">   
+                    <a-button type="primary" @click="handleOk" :disabled="problem==''" >进入咨询</a-button>
+                </div>
             </div>
         </a-modal>
     </div>
 </template>
 
 <script lang="ts" setup>
-import {toRefs,ref} from 'vue'
+import {toRefs,ref, resolveComponent} from 'vue'
 import { useRouter } from 'vue-router';
+import { getDoctorState,updateDoctorState } from '@/api/personalInfo.js'
+import { addDiagnosis } from '@/api/diagnosis.js'
 const props = defineProps({
   doctorInfo: {
     name:String,
@@ -75,12 +83,37 @@ const props = defineProps({
 })
 const {doctorInfo} = toRefs(props)
 const visible=ref(false)
+const idle=ref(false)
+const problem=ref("")
 function openModel(){
+    getDoctorState(doctorInfo.value.actorId).then(response=>{
+        if(response.status==200){
+            idle.value=response.data;
+        }
+        else{
+            console.log("获取医生状态错误")
+        }
+    }).catch(e=>{
+        console.log("获取医生状态错误")
+    })
     visible.value=true;
 }
 const router = useRouter();
 function handleOk(){
-    router.push({name:'inquiry',query:{doctorId:doctorInfo.value.actorId}})
+    let recordId=""
+    addDiagnosis(doctorInfo.value.actorId,problem.value).then(response=>{
+        if(response.status==200){
+            console.log("新增诊疗记录成功")
+            recordId=response.data;
+            router.push({name:'inquiry',query:{doctorId:doctorInfo.value.actorId,recordId:recordId}})
+        }
+        else{
+            console.log("新增诊疗记录失败")
+        }
+    }).catch(e=>{
+        console.log(e)
+        console.log("新增诊疗记录失败")
+    })
 }
 </script>
 

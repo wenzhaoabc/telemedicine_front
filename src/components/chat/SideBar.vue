@@ -2,50 +2,116 @@
     <div class="msglist">
         <div class="avatar" v-if="usertype">
             <div >
-                <a-avatar  :size="100">医生头像</a-avatar>
+                <a-avatar  :size="100"><img :src="doctorInfo.photo" alt=""></a-avatar>
             </div>
         </div>
         <div style="width:90%;margin-left:5%">
-            <div class="hcqStyle2">
+            <div class="hcqStyle2" style="margin-top:10px">
                 <div style="line-height: 30px;">
-                    医生姓名 年龄 性别
+                    {{doctorInfo.name}} {{doctorInfo.age}} {{doctorInfo.gender==1?'男':'女'}}
                 </div>
                 <div style="line-height: 30px; margin-top:10px ;">
-                    医生所属医院/部门
+                    {{doctorInfo.hospital}}
                 </div>
             </div>
-            <div class="hcqStyle2" style="margin-top:10px">
-                <div style="font-weight:bold; display: inline">平均评分:</div>
-                <span>5.0</span>
-            </div>
-            <div class="fontstyle" style="margin-top:20px">
-                <div style="font-weight:bold; display: inline">
-                    个人简介:
+            <div v-if="info.role==0">
+                <div class="hcqStyle2" style="margin-top:10px">
+                    <div style="font-weight:bold; display: inline">平均评分:</div>
+                    <span>{{doctorInfo.score}}</span>
                 </div>
-                <span>副主任医师，毕业于山西医科大学儿科专业，从事儿科临床工作30多年，曾先后多次前往北京等地进修学习。 副主任医师，毕业于山西医科大学儿科专业，从事儿科临床工作30多年，曾先后多次前往北京等地进修学习。  副主任医师，毕业于山西医科大学儿科专业，从事儿科临床工作30多年，曾先后多次前往北京等地进修学习。</span>
-            </div>
-            <div class="fontstyle" style="margin-top:20px">
-                <div style="font-weight:bold; display: inline">
-                    擅长邻域:
+                <div class="fontstyle" style="margin-top:20px">
+                    <div style="font-weight:bold; display: inline">
+                        个人简介:
+                    </div>
+                    <span>{{doctorInfo.introduction}}</span>
                 </div>
-                <span>新生儿黄疸,扁桃体炎,小儿感冒,腹泻,肺炎,咽炎,感冒,小儿腹股沟斜疝,手足口病 副主任医师，毕业于山西医科大学儿科专业，从事儿科临床工作30多年，曾先后多次前往北京等地进修学习。 副主任医师，毕业于山西医科大学儿科专业，从事儿科临床工作30多年，曾先后多次前往北京等地进修学习。</span>
-            </div>
-            <div class="fontstyle" style="margin-top:20px">
-                <div style="font-weight:bold; display: inline">
-                    联系电话:
+                <div class="fontstyle" style="margin-top:20px">
+                    <div style="font-weight:bold; display: inline">
+                        擅长邻域:
+                    </div>
+                    <span>{{doctorInfo.field}}</span>
                 </div>
-                <span>11111111111</span>
+                <div class="fontstyle" style="margin-top:20px">
+                    <div style="font-weight:bold; display: inline">
+                        联系电话:
+                    </div>
+                    <span>{{doctorInfo.telephone}}</span>
+                </div>
+                <div class="bottom">
+                    <a-button type="primary" status="danger" style="width:100%">结束咨询</a-button>
+                </div>
             </div>
-            <div class="bottom">
-                <a-button type="primary" status="danger" style="width:100%">结束咨询</a-button>
+            <div v-if="info.role==1">
+                <div class="fontstyle" style="margin-top:20px">
+                    <div style="font-weight:bold; display: inline">病症描述:</div>
+                    <span>{{problem}}</span>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import {ref} from 'vue'
+import {ref,onMounted,toRefs} from 'vue'
+import { getDoctor } from '@/api/personalInfo.js'
+import { userInfo } from '@/stores/counter.js';
+import { getProblem } from '@/api/diagnosis.js'
+import bus from '@/utils/eventBus.js'
+const props = defineProps({
+    id:{
+        doctorId:Number,
+        recordId:Number,
+    }
+})
+const {id} = toRefs(props)
+const info=userInfo();
+const doctorInfo=ref({})
+onMounted(()=>{
+    setTimeout(()=>{
+        updateInfo()
+    },200)
+    bus.on('idChange',newId=>{
+        id.value.doctorId=newId.doctorId
+        id.value.recordId=newId.recordId
+        updateInfo()
+        gainProblem()
+    })
+})
 const usertype=ref(true);
+
+function updateInfo(){
+    getDoctor(id.value.doctorId).then(response=>{
+        if(response.status==200){
+            console.log("获得信息成功")
+            doctorInfo.value=response.data
+            console.log(doctorInfo.value)
+        }
+        else{
+            console.log("获得信息失败")
+        }
+    }).catch(e=>{
+        console.log(e)
+        console.log("获得信息失败")
+    })
+}
+
+const problem=ref("")
+
+function gainProblem(){
+    getProblem(id.value.recordId).then(response=>{
+        if(response.status==200){
+            console.log("获得病症成功")
+            problem.value=response.data
+        }
+        else{
+            console.log("获得病症失败")
+        }
+    }).catch(e=>{
+        console.log(e)
+        console.log("获得病症失败")
+    })
+}
+
 </script>
 
 <style scoped>

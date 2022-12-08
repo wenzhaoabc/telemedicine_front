@@ -62,10 +62,12 @@ import Emoji from "./Emoji.vue"
 import {ref,reactive,toRefs,onMounted,onUpdated} from 'vue'
 import { sendTextMessage,getMessage,sendPictureMessage,sendAudioMessage } from '@/api/inquiry.js';
 import { userInfo } from '@/stores/counter.js';
-import { Message } from '@arco-design/web-vue'
+import { Message } from '@arco-design/web-vue';
+import bus from '@/utils/eventBus.js'
 const props = defineProps({
     id:{
-        doctorId:Number
+        doctorId:Number,
+        recordId:Number,
     }
 })
 const {id} = toRefs(props)
@@ -86,7 +88,47 @@ onMounted(()=>{
     },200)
     
 })
+var ws=null;
+setTimeout(()=>{
+    ws = new WebSocket(
+        `ws://localhost:8080/imserver/`+info.actorId
+    )
+    ws.onopen=function(){
+        sendMessage("recordId:"+id.value.recordId)
+    }
+    ws.onmessage = function (e) {
+        let jsondata=eval('('+e.data+')')
+        console.log("服务器返回的信息: " + e.data);
+        if (info.role==1&&jsondata.contentText.split(':')[0]=="recordId") {
+            id.value.doctorId=jsondata.fromUserId;
+            id.value.recordId=jsondata.contentText.split(':')[1]
+            bus.emit('idChange',id.value)
+            console.log(id.value.doctorId)
+        }
+        getMsg()
+    };
+    ws.onclose = function () {
+        
+    };
+},200)
 
+function sendMessage(msg){
+    ws.send('{"toUserId":"' + id.value.doctorId + '","contentText":"' + msg + '"}');
+}
+
+//websockt
+
+// 
+
+// ws.onopen = function(evt) { 
+//   console.log("Connection open ..."); 
+//   ws.send("Hello WebSockets!");
+// };
+
+// ws.onclose = function(evt) {
+//   console.log("Connection closed.");
+// };    
+//获得消息
 function getMsg(){
     getMessage(id.value.doctorId).then(response=>{
         if(response.status==200){
@@ -139,11 +181,12 @@ function changeText() {
 //发送文本消息
 function sendMsg(){
     console.log(id.value)
-    sendTextMessage(id.value.doctorId,text.value).then(response=>{
+    sendTextMessage(id.value.recordId,id.value.doctorId,text.value).then(response=>{
         if(response.status==200){
             text.value="";
             message.value.push(response.data)
             scrollToBottom()
+            sendMessage("123")
         }
         else{
             console.log("发送消息失败")
@@ -161,10 +204,11 @@ function onChange(fileList){
     let fd=new FormData()
     console.log(fileList[0].file)
     fd.append('file',fileList[0].file);
-    sendPictureMessage(id.value.doctorId,fd).then(response=>{
+    sendPictureMessage(id.value.recordId,id.value.doctorId,fd).then(response=>{
         if(response.status==200){
             console.log("发送图片成功")
             message.value.push(response.data);
+            sendMessage("123")
         }
         else{
             console.log("发送图片失败");
@@ -210,10 +254,11 @@ const recordData = reactive({
     formData.append('file', file)
 
     //发送给后端的方法
-    sendAudioMessage(id.value.doctorId,formData).then(response=>{
+    sendAudioMessage(id.value.recordId,id.value.doctorId,formData).then(response=>{
         if(response.status==200){
             message.value.push(response.data)
             console.log("发送语音成功")
+            sendMessage("123")
         }
         else{
             console.log("发送语音失败")

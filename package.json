@@ -10,10 +10,12 @@
     "axios": "^1.2.0",
     "emoji-vue": "^0.2.4",
     "js-audio-recorder": "^1.0.7",
+    "mitt": "^2.1.0",
     "pinia": "^2.0.23",
     "pinia-plugin-persist": "^1.0.0",
     "vue": "^3.2.41",
-    "vue-router": "^4.1.5"
+    "vue-router": "^4.1.5",
+    "websocket": "^1.0.34"
   },
   "devDependencies": {
     "@arco-design/web-vue": "^2.38.1",
