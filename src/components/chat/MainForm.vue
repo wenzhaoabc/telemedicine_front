@@ -66,7 +66,8 @@ import { Message } from '@arco-design/web-vue';
 import bus from '@/utils/eventBus.js'
 const props = defineProps({
     id:{
-        doctorId:Number
+        doctorId:Number,
+        recordId:Number,
     }
 })
 const {id} = toRefs(props)
@@ -93,24 +94,26 @@ setTimeout(()=>{
         `ws://localhost:8080/imserver/`+info.actorId
     )
     ws.onopen=function(){
-        sendMessage()
+        sendMessage("recordId:"+id.value.recordId)
     }
     ws.onmessage = function (e) {
         let jsondata=eval('('+e.data+')')
         console.log("服务器返回的信息: " + e.data);
-        if (info.role==1&&jsondata.contentText=="first") {
+        if (info.role==1&&jsondata.contentText.split(':')[0]=="recordId") {
             id.value.doctorId=jsondata.fromUserId;
-            bus.emit('idChange',id.value.doctorId)
+            id.value.recordId=jsondata.contentText.split(':')[1]
+            bus.emit('idChange',id.value)
             console.log(id.value.doctorId)
         }
+        getMsg()
     };
     ws.onclose = function () {
         
     };
 },200)
 
-function sendMessage(){
-    ws.send('{"toUserId":"' + id.value.doctorId + '","contentText":"' + "first" + '"}');
+function sendMessage(msg){
+    ws.send('{"toUserId":"' + id.value.doctorId + '","contentText":"' + msg + '"}');
 }
 
 //websockt
@@ -178,11 +181,12 @@ function changeText() {
 //发送文本消息
 function sendMsg(){
     console.log(id.value)
-    sendTextMessage(id.value.doctorId,text.value).then(response=>{
+    sendTextMessage(id.value.recordId,id.value.doctorId,text.value).then(response=>{
         if(response.status==200){
             text.value="";
             message.value.push(response.data)
             scrollToBottom()
+            sendMessage("123")
         }
         else{
             console.log("发送消息失败")
@@ -200,10 +204,11 @@ function onChange(fileList){
     let fd=new FormData()
     console.log(fileList[0].file)
     fd.append('file',fileList[0].file);
-    sendPictureMessage(id.value.doctorId,fd).then(response=>{
+    sendPictureMessage(id.value.recordId,id.value.doctorId,fd).then(response=>{
         if(response.status==200){
             console.log("发送图片成功")
             message.value.push(response.data);
+            sendMessage("123")
         }
         else{
             console.log("发送图片失败");
@@ -249,10 +254,11 @@ const recordData = reactive({
     formData.append('file', file)
 
     //发送给后端的方法
-    sendAudioMessage(id.value.doctorId,formData).then(response=>{
+    sendAudioMessage(id.value.recordId,id.value.doctorId,formData).then(response=>{
         if(response.status==200){
             message.value.push(response.data)
             console.log("发送语音成功")
+            sendMessage("123")
         }
         else{
             console.log("发送语音失败")

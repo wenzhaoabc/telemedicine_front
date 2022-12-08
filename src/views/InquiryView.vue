@@ -14,8 +14,9 @@ import { onMounted,ref } from 'vue'
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const doctorId=ref(null);
+const recordId=ref(null);
 onMounted(()=>{
-    doctorId.value={doctorId:router.currentRoute.value.query.doctorId};
+    doctorId.value={doctorId:router.currentRoute.value.query.doctorId, recordId:router.currentRoute.value.query.recordId}
     console.log(doctorId.value);
 })
 
@@ -34,6 +35,8 @@ onMounted(()=>{
     justify-content: center;
     -webkit-box-align: center;
     align-items: center;
+    background-image: url(https://tj-java-ee.oss-cn-shanghai.aliyuncs.com/pexels-moose-photos-1037992.jpg);
+    background-size:cover
 }
 
 .chatbox {

@@ -14,30 +14,38 @@
                     {{doctorInfo.hospital}}
                 </div>
             </div>
-            <div class="hcqStyle2" style="margin-top:10px">
-                <div style="font-weight:bold; display: inline">平均评分:</div>
-                <span>{{doctorInfo.score}}</span>
-            </div>
-            <div class="fontstyle" style="margin-top:20px">
-                <div style="font-weight:bold; display: inline">
-                    个人简介:
+            <div v-if="info.role==0">
+                <div class="hcqStyle2" style="margin-top:10px">
+                    <div style="font-weight:bold; display: inline">平均评分:</div>
+                    <span>{{doctorInfo.score}}</span>
                 </div>
-                <span>{{doctorInfo.introduction}}</span>
-            </div>
-            <div class="fontstyle" style="margin-top:20px">
-                <div style="font-weight:bold; display: inline">
-                    擅长邻域:
+                <div class="fontstyle" style="margin-top:20px">
+                    <div style="font-weight:bold; display: inline">
+                        个人简介:
+                    </div>
+                    <span>{{doctorInfo.introduction}}</span>
                 </div>
-                <span>{{doctorInfo.field}}</span>
-            </div>
-            <div class="fontstyle" style="margin-top:20px">
-                <div style="font-weight:bold; display: inline">
-                    联系电话:
+                <div class="fontstyle" style="margin-top:20px">
+                    <div style="font-weight:bold; display: inline">
+                        擅长邻域:
+                    </div>
+                    <span>{{doctorInfo.field}}</span>
                 </div>
-                <span>{{doctorInfo.telephone}}</span>
+                <div class="fontstyle" style="margin-top:20px">
+                    <div style="font-weight:bold; display: inline">
+                        联系电话:
+                    </div>
+                    <span>{{doctorInfo.telephone}}</span>
+                </div>
+                <div class="bottom">
+                    <a-button type="primary" status="danger" style="width:100%">结束咨询</a-button>
+                </div>
             </div>
-            <div class="bottom">
-                <a-button type="primary" status="danger" style="width:100%">结束咨询</a-button>
+            <div v-if="info.role==1">
+                <div class="fontstyle" style="margin-top:20px">
+                    <div style="font-weight:bold; display: inline">病症描述:</div>
+                    <span>{{problem}}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -46,21 +54,27 @@
 <script lang="ts" setup>
 import {ref,onMounted,toRefs} from 'vue'
 import { getDoctor } from '@/api/personalInfo.js'
+import { userInfo } from '@/stores/counter.js';
+import { getProblem } from '@/api/diagnosis.js'
 import bus from '@/utils/eventBus.js'
 const props = defineProps({
     id:{
-        doctorId:Number
+        doctorId:Number,
+        recordId:Number,
     }
 })
 const {id} = toRefs(props)
+const info=userInfo();
 const doctorInfo=ref({})
 onMounted(()=>{
     setTimeout(()=>{
         updateInfo()
     },200)
     bus.on('idChange',newId=>{
-        id.value.doctorId=newId
+        id.value.doctorId=newId.doctorId
+        id.value.recordId=newId.recordId
         updateInfo()
+        gainProblem()
     })
 })
 const usertype=ref(true);
@@ -80,6 +94,24 @@ function updateInfo(){
         console.log("获得信息失败")
     })
 }
+
+const problem=ref("")
+
+function gainProblem(){
+    getProblem(id.value.recordId).then(response=>{
+        if(response.status==200){
+            console.log("获得病症成功")
+            problem.value=response.data
+        }
+        else{
+            console.log("获得病症失败")
+        }
+    }).catch(e=>{
+        console.log(e)
+        console.log("获得病症失败")
+    })
+}
+
 </script>
 
 <style scoped>
