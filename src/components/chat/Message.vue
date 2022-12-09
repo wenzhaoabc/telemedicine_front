@@ -3,7 +3,10 @@
         <p class="time">{{singleMsg.createTime}}</p>
         <div class="message-item flex" :class="{'me':singleMsg.senderId==info.actorId,'other':singleMsg.senderId!=info.actorId}">
             <div class="avator-box hvhd">
-                <a-avatar :size="30">A</a-avatar>
+                <a-avatar :size="30">
+                    <img v-if="info.actorId!=singleMsg.senderId" :src="props.avatar.avatar" alt="">
+                    <img v-if="info.actorId==singleMsg.senderId" :src="info.userAvatar" alt="">
+                </a-avatar>
             </div>
             
             <div class="message-box flex_column">
@@ -39,6 +42,9 @@ const props = defineProps({
     kind:Number,
     value:String,
     createTime:Date,
+  },
+  avatar:{
+    avatar:String
   }
 })
 const {singleMsg} = toRefs(props)
