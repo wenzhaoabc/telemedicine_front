@@ -205,7 +205,11 @@ function sendMsg(){
     }).catch(e=>{
         console.log(e);
     })
+}
 
+//发送药单
+function sendOrder(){
+    
 }
 
 //图片上传

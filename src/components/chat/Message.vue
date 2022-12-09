@@ -19,6 +19,7 @@
                                 <p class="wordbreak puretext" v-if="(singleMsg.kind==0)">{{singleMsg.value}}</p>
                                 <img :src="singleMsg.value" v-if="(singleMsg.kind==1)" style="width:100px" >
                                 <audio :src="singleMsg.value" id="aud" ref="audio" controls="controls" v-if="(singleMsg.kind==2)"></audio>
+                                <a href="#" v-if="singleMsg.kind==3" > <img :src="medision" alt="" style="width:100px" > </a>
                             </div>
                         </div>
                     </div>
@@ -31,9 +32,9 @@
 <script lang="ts" setup>
 import {ref,onMounted,toRefs} from 'vue'
 import { userInfo } from '@/stores/counter.js';
+import medision from "@/assets/medision.png"
 
 const info=userInfo();
-
 
 // const me=ref(true);
 const props = defineProps({
