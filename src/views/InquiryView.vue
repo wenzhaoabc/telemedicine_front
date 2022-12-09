@@ -10,14 +10,31 @@
 <script lang="ts" setup>
 import SideBar from '@/components/chat/Sidebar.vue';
 import MainForm from '@/components/chat/MainForm.vue';
-import { onMounted,ref } from 'vue'
+import { onMounted,ref,onUnmounted  } from 'vue'
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const doctorId=ref(null);
 const recordId=ref(null);
+
+
 onMounted(()=>{
     doctorId.value={doctorId:router.currentRoute.value.query.doctorId, recordId:router.currentRoute.value.query.recordId}
     console.log(doctorId.value);
+    console.log(router.currentRoute.value.name)
+    window.onbeforeunload = function (e) {
+      console.log(router)
+      if (router.currentRoute.value.name == "inquiry") {
+        e = e || window.event;
+        // 兼容IE8和Firefox 4之前的版本
+        if (e) {
+          e.returnValue = '关闭提示1111';
+        }
+        // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
+        return '关闭提示222';
+      } else {
+        window.onbeforeunload = null
+      }
+    };
 })
 
 </script>

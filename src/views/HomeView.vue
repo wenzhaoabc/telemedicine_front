@@ -39,7 +39,7 @@ export default {
       <div class="header-link">
         <a-link src="#" class="page-tag">Home</a-link>
         <a-link src="#" class="page-tag">Serch</a-link>
-        <a-link href="inquiry" class="page-tag">INquiry</a-link>
+        <a-link href="#" class="page-tag" @click="openInquiry">INquiry</a-link>
         <a-link src="#" class="page-tag">Doctor</a-link>
         <a-avatar :style="{ backgroundColor: '#3370ff', marginRight: '60px' }">
           <IconUser />
@@ -57,6 +57,15 @@ export default {
 
 <script  setup>
 import ChooseDoctor from "./ChooseDoctorView.vue"
+import { useRouter } from 'vue-router';
+const router = useRouter();
+function openInquiry(){
+  let href = router.resolve({ //使用resolve
+      name:'inquiry',    //这里是跳转页面的name
+  })
+  window.open(href.href, '_blank')
+}
+
 </script>
 
 <style>

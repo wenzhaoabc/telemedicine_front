@@ -12,7 +12,7 @@
                     <div class="mbjsk" id="scrollDiv">
                         <div class="panel">
                             <div v-for="item in message">
-                                <MyMessage :singleMsg="item"></MyMessage>
+                                <MyMessage :singleMsg="item" :avatar="doctorAvatar" ></MyMessage>
                             </div>
                         </div>
                     </div>
@@ -75,6 +75,7 @@ const info=userInfo();
 
 const text=ref("")
 const message=ref([])
+const doctorAvatar=ref({avatar:null})
 
 onMounted(()=>{
     document.onkeydown = () => {
@@ -86,7 +87,13 @@ onMounted(()=>{
     setTimeout(function(){
         getMsg();
     },200)
-    
+    bus.on('doctorAvatar',avatar=>{
+        doctorAvatar.value.avatar=avatar
+    })
+    bus.on('close',value=>{
+        sendMessage("close")
+        ws.close()
+    })
 })
 var ws=null;
 setTimeout(()=>{
@@ -104,6 +111,10 @@ setTimeout(()=>{
             id.value.recordId=jsondata.contentText.split(':')[1]
             bus.emit('idChange',id.value)
             console.log(id.value.doctorId)
+        }
+        if(jsondata.contentText=="close"){
+            message.value=null
+            bus.emit('clearSide',"r")
         }
         getMsg()
     };

@@ -48,7 +48,7 @@
             为了更好地开展咨询，请先花一点时间填写下个人状况
             </template>
             <div>
-                <a-textarea v-model="problem" :auto-size="{minRows:2,maxRows:5}" placeholder="请描述病症状况，尽量详细但不要超过500个字" :max-length="500" allow-clear/>
+                <a-textarea v-model="problem" :auto-size="{minRows:2,maxRows:5}" placeholder="请简单描述病症状况，不要超过100个字" :max-length="90" allow-clear/>
             </div>
             <div style="width:100%">
                 <div v-if="!idle" style="color:red;text-align:center;margin-top:10px">该医生当前不是空闲状态，无法咨询，请等等再来咨询或者换一个医生</div>
@@ -105,7 +105,13 @@ function handleOk(){
         if(response.status==200){
             console.log("新增诊疗记录成功")
             recordId=response.data;
-            router.push({name:'inquiry',query:{doctorId:doctorInfo.value.actorId,recordId:recordId}})
+            let href = router.resolve({ //使用resolve
+                name:'inquiry',    //这里是跳转页面的name
+                query:{doctorId:doctorInfo.value.actorId,recordId:recordId}
+            })
+            window.open(href.href, '_blank')
+            visible.value=false
+            // router.push({name:'inquiry',query:{doctorId:doctorInfo.value.actorId,recordId:recordId}})
         }
         else{
             console.log("新增诊疗记录失败")

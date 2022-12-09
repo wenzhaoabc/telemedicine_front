@@ -9,6 +9,16 @@ export function addDiagnosis(doctorId,problem) {
     })
 }
 
+export function updateDiagnosis(recordId,review,score) {
+    return request({
+        url: 'diagnosis/update',
+        method: 'post',
+        params: {"recordId":recordId,
+                "review":review,
+                "score":score},
+    })
+}
+
 export function getProblem(recordId) {
     return request({
         url: 'diagnosis/getProblem',
