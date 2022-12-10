@@ -19,22 +19,30 @@
                                 <p class="wordbreak puretext" v-if="(singleMsg.kind==0)">{{singleMsg.value}}</p>
                                 <img :src="singleMsg.value" v-if="(singleMsg.kind==1)" style="width:100px" >
                                 <audio :src="singleMsg.value" id="aud" ref="audio" controls="controls" v-if="(singleMsg.kind==2)"></audio>
+                                <a href="#" v-if="singleMsg.kind==3" @click="visible=true" > <img :src="medision" alt="" style="width:100px" > </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <a-modal v-model:visible="visible" :footer="false">
+            <template #title>
+            药单
+            </template>
+            <div>药单界面怎么设计就交给你啦</div>
+        </a-modal>
     </div>
 </template>
 
 <script lang="ts" setup>
 import {ref,onMounted,toRefs} from 'vue'
 import { userInfo } from '@/stores/counter.js';
+import medision from "@/assets/medision.png"
 
 const info=userInfo();
-
-
+const visible=ref(false);
 // const me=ref(true);
 const props = defineProps({
   singleMsg: {

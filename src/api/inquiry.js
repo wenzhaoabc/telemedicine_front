@@ -10,6 +10,15 @@ export function sendTextMessage(recordId,receiverId,value) {
     })
 }
 
+export function sendOrderMessage(recordId,receiverId) {
+    return request({
+        url: 'inquiry/sendOrder',
+        method: 'post',
+        params: {"recordId":recordId,
+            "receiverId":receiverId},
+    })
+}
+
 export function sendPictureMessage(recordId,receiverId,file) {
     return request({
         url: 'inquiry/sendPicture',

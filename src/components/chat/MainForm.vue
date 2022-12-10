@@ -60,7 +60,7 @@ import RecordingAnim from './RecordingAnim.vue'
 import Recorder from 'js-audio-recorder'
 import Emoji from "./Emoji.vue"
 import {ref,reactive,toRefs,onMounted,onUpdated} from 'vue'
-import { sendTextMessage,getMessage,sendPictureMessage,sendAudioMessage } from '@/api/inquiry.js';
+import { sendTextMessage,getMessage,sendPictureMessage,sendAudioMessage,sendOrderMessage } from '@/api/inquiry.js';
 import { userInfo } from '@/stores/counter.js';
 import { Message } from '@arco-design/web-vue';
 import bus from '@/utils/eventBus.js'
@@ -82,6 +82,7 @@ onMounted(()=>{
         var key = window.event.keyCode
         if (key === 13) {
             sendMsg();
+            //这里判断什么时候发送消息，什么时候发送药单
         }
     }
     setTimeout(function(){
@@ -205,7 +206,25 @@ function sendMsg(){
     }).catch(e=>{
         console.log(e);
     })
+}
 
+//发送药单
+function sendOrder(){
+    //这里还要加一个你加的药单的参数，记得先去api/inquiry.js里面的这个函数里面的params加上你要加的参数名，然后这里再加上你的药单参数，还有后端的逻辑还要补齐
+    //最后去上面发送消息的时候判断一下是不是发送药单把这个函数加上就行
+    sendOrderMessage(id.value.recordId,id.value.doctorId).then(response=>{
+        if(response.status==200){
+            message.value.push(response.data)
+            scrollToBottom()
+            sendMessage("123")
+        }
+        else{
+            console.log("发送药单失败")
+        }
+    }).catch(e=>{
+        console.log(e)
+        console.log("发送药单失败")
+    })
 }
 
 //图片上传
