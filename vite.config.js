@@ -16,7 +16,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         // 后端服务器API访问地址
-        target: "http://127.0.0.1:5000/",
+        target: "http://127.0.0.1:8080/",
         // 请求host是否改变端口，默认true
         changeOrigin: true,
         // 是否支持websocket，，默认true

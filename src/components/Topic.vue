@@ -1,182 +1,178 @@
 <template>
     <div>
         <div class="topic">
-            <a-typography>
-                <a-typography-title @click="goTopicPage(qaitem.topic.id)" class="mouse-hover" :heading="5">
-                    {{ qaitem.topic.title }}
-                </a-typography-title>
-                <a-typography-paragraph class="mouse-hover" title="" :ellipsis="{
-                    rows: 2,
-                    expandable: true,
-                    showTooltip: false
-                }" @expand="readAllText">
-                    <div v-show="textExpanded">
+            <div>
+                <p v-if="withTitle" @click="goTopicPage(qaitem.question.qId)" class="mouse-hover topic-title">
+                    {{ qaitem.question.title }}
+                </p>
+                <a-space v-if="textExpanded.value"></a-space>
+                <div :class="textExpanded.value ? '' : 'mouse-hover'" title="">
+                    <div v-show="textExpanded.value || withAvatar">
                         <!-- 展示发帖人信息 -->
                         <a-space>
-                            <a-avatar>
-                                <img alt="USER" :src="qaitem.post.author.avatar" />
+                            <a-avatar :size="30">
+                                <img alt="USER" :src="qaitem.actor.avatar" />
                             </a-avatar>
-                            <span>{{ qaitem.post.author.name }}</span>
+                            <span>{{ qaitem.actor.name }}</span>
                         </a-space>
                     </div>
-                    <div id="topic-content" v-html="qaitem.post.content"></div>
-                    <template #expand-node="{ expanded }">
-                        {{ expanded ? 'Less' : 'More' }}
-                    </template>
-                </a-typography-paragraph>
-                <a-typography-paragraph>
+                    <!-- 帖子内容 -->
+                    <div>
+                        <div :class="contentStyle" class="topic-content" v-html="qaitem.answer.content"
+                            @click="readAllText">
+                        </div>
+                    </div>
+                    <div>
+                        <a-button v-show="!textExpanded.value" @click="readAllText" type="text">
+                            <template #icon>
+                                <icon-double-down />
+                            </template>
+                            <template #default>阅读全文</template>
+                        </a-button>
+                    </div>
+                    <div v-show="textExpanded.value">
+                        <p class="edit-time">编辑于{{ new Date(qaitem.answer.createTime).toLocaleDateString() }}</p>
+                    </div>
+                </div>
+                <div :class="reviewExpanded ? 'post-button' : ''">
                     <a-space>
                         <a-button :type="UpDown.isHelpful ? 'primary' : 'text'" @click="clickUporDown('up')">
                             <template #icon>
                                 <icon-thumb-up-fill />
                             </template>
-                            <template #default>{{ UpDown.helpful + (UpDown.isHelpful ? 1 : 0) }}</template>
+                            <template #default>{{ qaitem.answer.upNum + (UpDown.isHelpful ? 1 : 0) }}</template>
                         </a-button>
                         <a-button :type="!UpDown.isUnhelpful ? 'text' : 'primary'" @click="clickUporDown('down')">
                             <template #icon>
                                 <icon-thumb-down-fill />
                             </template>
-                            <template #default>{{ UpDown.unHelpful + (UpDown.isUnhelpful ? 1 : 0) }}</template>
+                            <template #default>{{ qaitem.answer.downNum + (UpDown.isUnhelpful ? 1 : 0) }}</template>
                         </a-button>
                         <a-button type="text" @click="clickUporDown('review')">
                             <template #icon>
                                 <icon-message />
                             </template>
-                            <template #default>{{ UpDown.reviewNum + (UpDown.isReview ? 1 : 0) }}</template>
+                            <template #default>{{ qaitem.answer.reviewNum + (UpDown.isReview ? 1 : 0) }}</template>
                         </a-button>
-                        <a-button @click="readLessText" v-if="textExpanded" type="text" style="margin-left:325px ;">
+                        <a-button @click="readLessText" v-if="textExpanded.value" type="text"
+                            style="margin-left:325px ;">
                             <template #icon>
                                 <icon-double-up />
                             </template>
                             <template #default>收起</template>
                         </a-button>
                     </a-space>
-                    <!-- </a-affix> -->
-                </a-typography-paragraph>
-            </a-typography>
-            <!-- <div>评论信息</div> -->
-        </div>
-        <div>
-            <!-- <h2>此处为消息： {{ message }}</h2> -->
-            <button @click="mes += '!'">改变{{ mes }}</button>
+                </div>
+            </div>
+            <div v-if="reviewExpanded">
+                <ReviewListVue :father="qaitem.answer.aId" :fathertype="'answer'" :total="qaitem.answer.reviewNum">
+                </ReviewListVue>
+            </div>
         </div>
     </div>
 </template>
 
-<script setup>
-import { onBeforeMount, reactive, ref } from 'vue';
+<script>
+import axios from 'axios'
+import ReviewListVue from './ReviewList.vue'
+import userStore from '../stores/user'
 
-const props = defineProps(['qaitem'])
+const actor = userStore()
 
-
-let topic, post
-onBeforeMount(() => {
-    topic = reactive(props.t)
-    post = reactive(props.p)
-    console.log('onBeforeMount end...', topic, post, props)
-})
-
-// Test
-// 监视message字段，测试父子组件传值
-
-
-// 是否展开阅读全文
-let textExpanded = ref(false)
-function readAllText(ed) {
-    textExpanded.value = ed
-    console.log('readAll text', ed);
-    console.log("props = ", props)
-}
-
-function readLessText() {
-    let temp = document.getElementById('topic-content')
-    console.log(temp);
-}
-
-
-
-// 跳转到话题页面
-function goTopicPage(title) {
-    console.log('前往话题页面---', title);
-}
-
-// 点赞/踩
-let UpDown = reactive({
-    helpful: 123,
-    unHelpful: 12,
-    reviewNum: 547,
-    isHelpful: null,
-    isUnhelpful: null,
-    isReview: null,
-})
-function clickUporDown(status) {
-    if (status === 'up') {
-        UpDown.isHelpful = !UpDown.isHelpful
-        UpDown.isUnhelpful = UpDown.isHelpful ? false : null
-    } else if (status === 'down') {
-        UpDown.isUnhelpful = !UpDown.isUnhelpful
-        UpDown.isHelpful = UpDown.isUnhelpful ? false : null
-    } else if (status === 'review') {
-        console.log('review')
-    }
-}
-
-
-</script>
-
-<!-- <script>
-import { onMounted, reactive, ref, toRef, toRefs, watch } from 'vue'
-export default ({
+export default {
+    components: { ReviewListVue },
     props: {
-        T: Object,
-        P: Object
+        qaitem: Object,
+        withTitle: { type: Boolean, default: true },
+        withAvatar: { type: Boolean, default: false }
     },
-    setup(props, ctx) {
-        // console.log(ctx.attrs)
-        let post = reactive({})
-        let topic = reactive({})
-        console.log('子组件接收，props =  ', props);
-        watch(props, (n, o) => {
-            console.log('post new value', o)
-
-            console.log('props is changed = ', props)
-            console.log('props is changed = ', props);
-            post = reactive(n)
-        }, { deep: true })
-        watch(props.T, (n, o) => {
-            console.log('topic new value', o);
-            topic = reactive(n)
-        }, { deep: true })
-
-        let UpDown = reactive({
-            helpful: 123,
-            unHelpful: 12,
-            reviewNum: 547,
-            isHelpful: null,
-            isUnhelpful: null,
-            isReview: null,
-        })
-        function clickUporDown(status) {
-            if (status === 'up') {
-                UpDown.isHelpful = !UpDown.isHelpful
-                UpDown.isUnhelpful = UpDown.isHelpful ? false : null
-            } else if (status === 'down') {
-                UpDown.isUnhelpful = !UpDown.isUnhelpful
-                UpDown.isHelpful = UpDown.isUnhelpful ? false : null
-            } else if (status === 'review') {
-                console.log('review')
+    data() {
+        return {
+            // 是否展开全文
+            textExpanded: { value: false },
+            // 对该post点赞/点踩/评论
+            UpDown: {
+                isHelpful: null,
+                isUnhelpful: null,
+                isReview: null,
+            },
+            reviewList: [],
+            reviewAction: new Array(),
+            // 是否展开了评论
+            reviewExpanded: false,
+            // qaitem的结构
+            qaitem_e: {
+                question: { q_id: '1234567890', title: '这是问题的标题' },
+                answer: {
+                    a_id: '1234567890', q_id: '1234567890', actor_id: '回答用户id', content: '回答的内容', create_time: '回答时间',
+                    up_num: 100, down_num: 23, review_num: 6
+                },
+                actor: { actor_id: 46819889, name: '用户名', avatar: '用户头像url' }
             }
         }
-
-        return {
-            post,
-            topic,
-            UpDown
+    },
+    methods: {
+        goTopicPage() {
+            console.log('。。。打开话题主页')
+            this.$router.push({ path: `/question/${this.$props.qaitem.question.qId}` })
+        },
+        readAllText() {
+            if (this.textExpanded.value === false)
+                this.textExpanded.value = true
+        },
+        readLessText() {
+            this.textExpanded.value = false
+        },
+        // 获取用户对回答的点踩情况
+        getUpDown() {
+            axios.get(`/api/forum/vote/answer/${this.$props.qaitem.answer.a_id}`)
+                .then((res) => {
+                    this.UpDown.isHelpful = res.data.up
+                    this.UpDown.isUnhelpful = res.data.down
+                    this.UpDown.isReview = res.data.review
+                }).catch((err) => {
+                    console.log('请求失败')
+                })
+        },
+        // 对post点赞/点踩
+        clickUporDown(status) {
+            if (status === 'up') {
+                this.UpDown.isHelpful = !this.UpDown.isHelpful
+                this.UpDown.isUnhelpful = this.UpDown.isHelpful ? false : null
+            } else if (status === 'down') {
+                this.UpDown.isUnhelpful = !this.UpDown.isUnhelpful
+                this.UpDown.isHelpful = this.UpDown.isUnhelpful ? false : null
+            } else if (status === 'review') {
+                this.reviewExpanded = !this.reviewExpanded
+                return
+            }
+            let data = {
+                actor_id: 'actor_id', a_id: this.qaitem.answer.a_id, type: 'answer',
+                up: this.UpDown.helpful, down: this.UpDown.unHelpful
+            }
+            axios.post('/api/forum/vote/answer/', data)
+                .then((res) => {
+                    console.log(status + '成功')
+                }).catch((err) => {
+                    console.log(status + '失败')
+                })
+        },
+        processItem() {
+            this.UpDown.isHelpful = this.$props.qaitem.action.up ? true : false
+            this.UpDown.isUnhelpful = this.$props.qaitem.action.down ? true : false
         }
+    },
+    computed: {
+        contentStyle: function () {
+            return this.textExpanded.value ? 'topic-content-height2' : 'topic-content-height1'
+        },
+    },
+    mounted() {
+        // this.getUpDown()
 
     }
-})
-</script> -->
+}
+</script>
 
 <style scoped>
 .topic {
@@ -190,5 +186,40 @@ export default ({
 
 .mouse-hover:hover {
     color: var(--color-text-2);
+}
+
+.topic-title {
+    font-size: 20px;
+    margin-bottom: 0;
+}
+
+.edit-time {
+    color: var(--color-neutral-4);
+}
+
+
+* {
+    font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+        'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+}
+</style>
+
+<style>
+.topic-content-height1 {
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+.topic-content-height2 {
+    height: max-content;
+}
+
+.topic-content {
+    /* width: 100%; */
+    font-size: medium;
+    line-height: 1.5em;
 }
 </style>

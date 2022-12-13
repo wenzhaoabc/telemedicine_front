@@ -9,6 +9,9 @@ import { RouterLink, RouterView } from 'vue-router'
   <router-link class="topage" to="/inquiry">
     诊疗
   </router-link>
+  <router-link class="topage" to="/tinymce">
+    富文本
+  </router-link>
 </template>
 
 
