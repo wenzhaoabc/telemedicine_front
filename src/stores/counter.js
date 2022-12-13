@@ -26,6 +26,7 @@ export const userInfo = defineStore('info', {
       field:null,
       userAvatar:null,
       userName:null,
+      phone:null
     }
   },
   actions:{
@@ -42,6 +43,7 @@ export const userInfo = defineStore('info', {
       this.seviceYear=loginInfo.seviceYear;
       this.userAvatar=loginInfo.photo;
       this.userName=loginInfo.name;
+      this.phone=loginInfo.telephone;
     }
   },
   // 开启数据缓存

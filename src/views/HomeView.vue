@@ -41,9 +41,11 @@ export default {
         <a-link src="#" class="page-tag">Serch</a-link>
         <a-link href="#" class="page-tag" @click="openInquiry">INquiry</a-link>
         <a-link src="#" class="page-tag">Doctor</a-link>
+        <router-link :to="'/myInfo'">
         <a-avatar :style="{ backgroundColor: '#3370ff', marginRight: '60px' }">
           <IconUser />
         </a-avatar>
+        </router-link>
       </div>
     </a-layout-header>
     <a-layout-content>

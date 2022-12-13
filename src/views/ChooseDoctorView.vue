@@ -21,7 +21,9 @@
             <a-tabs type="card" trigger="hover" style="margin-top:20px">
                     <a-tab-pane v-for="(item, index) of department" :key="index" :title="item">
                         <div  v-for="(doctor,index) of doctors" >
-                            <ChooseDoctor :key="index" :doctorInfo="doctor" v-if="(doctor.department==item)" ></ChooseDoctor>
+                            <router-Link :to="'/doctorInfo/'+doctor.actorId">
+                                <ChooseDoctor :key="index" :doctorInfo="doctor" v-if="(doctor.department==item)" ></ChooseDoctor>
+                            </router-Link>
                         </div>
                         
                     </a-tab-pane>

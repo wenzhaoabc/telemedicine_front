@@ -22,6 +22,13 @@ export function getDoctorState(doctorId){
         params:{"doctorId":doctorId}
     })
 }
+export function getDoctorReviews(doctorId){
+    return request({
+        url: 'personalInfo/getDoctorReviews',
+        method: 'get',
+        params:{"doctorId":doctorId}
+    })
+}
 
 export function updateDoctorState(doctorId){
     return request({

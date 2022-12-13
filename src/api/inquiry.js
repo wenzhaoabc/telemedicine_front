@@ -10,12 +10,13 @@ export function sendTextMessage(recordId,receiverId,value) {
     })
 }
 
-export function sendOrderMessage(recordId,receiverId) {
+export function sendOrderMessage(recordId,receiverId,medicineList) {
     return request({
         url: 'inquiry/sendOrder',
         method: 'post',
         params: {"recordId":recordId,
             "receiverId":receiverId},
+        data:medicineList
     })
 }
 
