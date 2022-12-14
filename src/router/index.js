@@ -13,7 +13,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-   
+
     },
     {
       path: '/login',
@@ -45,7 +45,7 @@ const router = createRouter({
       path: '/header',
       name: 'header',
       component: HeaderView,
-      children:[
+      children: [
         {
           path: '/myInfo',
           name: 'myInfo',
@@ -55,10 +55,55 @@ const router = createRouter({
           path: '/doctorInfo/:id',
           name: 'doctorInfo',
           component: DoctorInfoView,
-          props:true
+          props: true
         },
       ]
     },
+    {
+      path: '/forum',
+      name: 'forum',
+      component: () => import('../views/ForumView.vue'),
+    },
+    {
+      path: '/questions',
+      name: 'questions',
+      component: () => import('../views/QuestionList.vue')
+    },
+    {
+      path: '/answer/:qId',
+      name: 'answer',
+      component: () => import('../views/AnswerQuestion.vue')
+    },
+    {
+      path: '/askquestion',
+      name: 'askquestion',
+      component: () => import('../views/AskQuestion.vue')
+    },
+    {
+      path: '/question/:qId',
+      name: 'questiondetail',
+      component: () => import('../views/QuestionDetail.vue')
+    },
+    {
+      path: '/write',
+      name: 'write',
+      component: () => import('../views/WriteArticle.vue')
+    },
+    {
+      path: '/article/:id',
+      name: 'article',
+      component: () => import('../views/DisplayArticle.vue')
+    },
+    {
+      path: '/tinymce',
+      name: 'tinymce',
+      component: () => import('../components/Tinyeditor.vue')
+    },
+    {
+      path: '/webrtc',
+      name: 'webrtc',
+      component: () => import('../components/WebRtc.vue')
+    }
   ]
 })
 
