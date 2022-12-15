@@ -2,11 +2,18 @@
     <div>
         <div class="wrapper">
             <div class="card-inner">
+<<<<<<< HEAD
                 <a href="#">
                     <a-avatar :size="70" style="border: 1px solid #E5F2FE;margin-top:10px" @click="goDoctorInfo">
                         <img :src="doctorInfo.photo" alt="">
+=======
+                
+                <router-Link :to="'/doctorInfo/'+doctorInfo.actorId">
+                    <a-avatar :size="70" style="border: 1px solid #E5F2FE;margin-top:10px">
+                        <img  :src="doctorInfo.photo" alt="">
+>>>>>>> 21da866c2acd80dc7557e92ecf54b50724009bd4
                     </a-avatar>
-                </a>
+                </router-Link>>
                 <p class="doctor-name">
                     {{ doctorInfo.name }}
                     <i>主任医师</i>

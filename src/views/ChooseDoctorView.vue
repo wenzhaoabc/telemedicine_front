@@ -22,8 +22,7 @@
                 <a-tab-pane v-for="(item, index) of department" :key="index" :title="item">
                     <div v-for="(doctor, index) of doctors">
                         <!-- <router-Link :to="'/doctorInfo/'+doctor.actorId"> -->
-                        <ChooseDoctor :key="index" :doctorInfo="doctor" v-if="(doctor.department == item)">
-                        </ChooseDoctor>
+                        <ChooseDoctor :key="index" :doctorInfo="doctor" v-if="(doctor.department == item)"></ChooseDoctor>
                         <!-- </router-Link> -->
                     </div>
 
