@@ -148,7 +148,7 @@ export default {
         // 获取用户对该回答评论的点赞/收藏信息
         getreviewAction() {
             // URL = review/<article_id,answer_id>/<user_id>
-            axios.get(`/api/forum/review/vote/answer/${this.$props.father}`).then((res) => {
+            axios.get(`/forum/review/vote/answer/${this.$props.father}`).then((res) => {
                 this.reviewAction = res.data
             }).then((err) => {
                 this.$message.error('获取个人信息失败')

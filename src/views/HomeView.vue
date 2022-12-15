@@ -33,18 +33,18 @@ export default {
         <a-divider direction="vertical" />
       </div> -->
       <div class="header-logo">
-        <img src="https://ydlunacommon-cdn.nosdn.127.net/1ed7a7858eabd4d407370a83d9209838.png" alt="">
+        <img src="/log.svg" alt="">
       </div>
       <div style="width:65% ;"></div>
       <div class="header-link">
         <a-link src="#" class="page-tag">Home</a-link>
-        <a-link src="#" class="page-tag">Serch</a-link>
+        <a-link src="#" class="page-tag">Forum</a-link>
         <a-link href="#" class="page-tag" @click="openInquiry">INquiry</a-link>
         <a-link src="#" class="page-tag">Doctor</a-link>
         <router-link :to="'/myInfo'">
-        <a-avatar :style="{ backgroundColor: '#3370ff', marginRight: '60px' }">
-          <IconUser />
-        </a-avatar>
+          <a-avatar :style="{ backgroundColor: '#3370ff', marginRight: '60px' }">
+            <IconUser />
+          </a-avatar>
         </router-link>
       </div>
     </a-layout-header>
@@ -61,9 +61,9 @@ export default {
 import ChooseDoctor from "./ChooseDoctorView.vue"
 import { useRouter } from 'vue-router';
 const router = useRouter();
-function openInquiry(){
+function openInquiry() {
   let href = router.resolve({ //使用resolve
-      name:'inquiry',    //这里是跳转页面的name
+    name: 'inquiry',    //这里是跳转页面的name
   })
   window.open(href.href, '_blank')
 }

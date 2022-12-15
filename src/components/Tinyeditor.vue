@@ -97,7 +97,7 @@ export default {
                         xhr.setRequestHeader("Content-Type", "application/json")
                         xhr.send(data)
                         */
-                        axios.post('/api/forum/image',
+                        axios.post('/forum/image',
                             { 'file': blobInfo.base64(), 'fileName': blobInfo.filename() })
                             .then((res) => {
                                 resolve(res.data.location)

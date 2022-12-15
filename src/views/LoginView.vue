@@ -1,77 +1,79 @@
 <template>
   <main>
-<div class="login_bg">
-    <div class="content">
-      <div class="content_wrapper" >
+    <div class="login_bg">
+      <div class="content">
+        <div class="content_wrapper">
 
-        <div class="login_pictures" >
-         <div class="login_pictures_picture" style="background-image:url('./doctor.jpg'); background-size: 100% 100%;">
-          </div> 
-        </div>
-
-        <div class="xm_login_container login_container">
-          <div class="xm_login_card_tab">欢迎登录</div>
-          <!-- 账号密码登录 -->
-          <div class="login_form" id="pwlogin">
-            <a-form :model="form" style="{ width: '300px' }">
-              <div class="inputstyle">
-                
-                <a-input v-model="form.phone" placeholder="请输入手机号" :size="large">
-                  <template #prepend>
-                    +86
-                  </template>
-                </a-input> 
-              </div>
-              <div class="inputstyle">
-                <a-input-password v-model="form.pwd" placeholder="请输入密码" />
-              </div>
-              <div class="buttonstyle">
-                <a-form-item>
-                  <a-button html-type="submit" @click="handleLoginPwd">登录</a-button>
-                </a-form-item>
-              </div>
-            </a-form>
-            <div class="bottom">
-              <a href="/ForgetpwdView" class="link">找回密码</a>
-              <span class="dotted">|</span>
-              <a href='javascript:void(0)' @click="pwhidden" class="link">验证码快捷登录</a>
-              <span class="dotted">|</span>
-              <a href="/register" class="link">注册帐号</a>
-            </div>
-          </div>
-          <!-- 验证码登录 -->
-          <div class="login_form" id="pinlogin">
-            <a-form :model="form" :style="{ width: '300px' }">
-              <div class="inputstyle">
-                <a-input v-model="form.phone" placeholder="请输入手机号" :size="large">
-                  <template #prepend>
-                    +86
-                  </template>
-                </a-input>
-              </div>
-              <div class="inputstyle">
-                <a-input v-model="form.pin" placeholder="请输入验证码" style="width:128px" />
-                <a-button type="primary" @click="sendMsg" :disabled=this.form.disabled>{{ this.form.btnTitle }}</a-button>
-              </div>
-              <div class="buttonstyle">
-                <a-form-item>
-                  <a-button html-type="submit" @click="handleLoginPin">登录</a-button>
-                </a-form-item>
-              </div>
-            </a-form>
-            <div class="bottom2">
-              <a href='javascript:void(0)' @click="pinhidden" class="link">账号密码登录</a>
-
+          <div class="login_pictures">
+            <div class="login_pictures_picture"
+              style="background-image:url('./doctor.jpg'); background-size: 100% 100%;">
             </div>
           </div>
 
+          <div class="xm_login_container login_container">
+            <div class="xm_login_card_tab">欢迎登录</div>
+            <!-- 账号密码登录 -->
+            <div class="login_form" id="pwlogin">
+              <a-form :model="form" style="{ width: '300px' }">
+                <div class="inputstyle">
+
+                  <a-input v-model="form.phone" placeholder="请输入手机号" :size="large">
+                    <template #prepend>
+                      +86
+                    </template>
+                  </a-input>
+                </div>
+                <div class="inputstyle">
+                  <a-input-password v-model="form.pwd" placeholder="请输入密码" />
+                </div>
+                <div class="buttonstyle">
+                  <a-form-item>
+                    <a-button html-type="submit" @click="handleLoginPwd">登录</a-button>
+                  </a-form-item>
+                </div>
+              </a-form>
+              <div class="bottom">
+                <a href="/ForgetpwdView" class="link">找回密码</a>
+                <span class="dotted">|</span>
+                <a href='javascript:void(0)' @click="pwhidden" class="link">验证码快捷登录</a>
+                <span class="dotted">|</span>
+                <a href="/register" class="link">注册帐号</a>
+              </div>
+            </div>
+            <!-- 验证码登录 -->
+            <div class="login_form" id="pinlogin">
+              <a-form :model="form" :style="{ width: '300px' }">
+                <div class="inputstyle">
+                  <a-input v-model="form.phone" placeholder="请输入手机号" size="large">
+                    <template #prepend>
+                      +86
+                    </template>
+                  </a-input>
+                </div>
+                <div class="inputstyle">
+                  <a-input v-model="form.pin" placeholder="请输入验证码" style="width:128px" />
+                  <a-button type="primary" @click="sendMsg" :disabled=this.form.disabled>{{ this.form.btnTitle
+                  }}</a-button>
+                </div>
+                <div class="buttonstyle">
+                  <a-form-item>
+                    <a-button html-type="submit" @click="handleLoginPin">登录</a-button>
+                  </a-form-item>
+                </div>
+              </a-form>
+              <div class="bottom2">
+                <a href='javascript:void(0)' @click="pinhidden" class="link">账号密码登录</a>
+
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
+      <div class="bottom_style">
+        @2022-2023 MIXER 京1CP0000000X号-1 京公网安备1000000000000X 关于 | 手机版 | 职位 | 公司 | 人脉 | 行业 | 招商 | 反馈 | 服务与声明
+      </div>
     </div>
-    <div class="bottom_style">
-    @2022-2023 MIXER  京1CP0000000X号-1  京公网安备1000000000000X  关于 | 手机版 | 职位 | 公司 | 人脉 | 行业 | 招商 | 反馈 | 服务与声明
-    </div>
-  </div>
   </main>
 </template>
   
@@ -89,7 +91,7 @@ export default {
       btnTitle: '获取验证码',
       disabled: false
     })
-    const loginStore=userInfo();
+    const loginStore = userInfo();
     return {
       form,
       loginStore
@@ -161,7 +163,7 @@ export default {
           }).then((res) => {
             if (res.data) {
               console.log(res.data)
-              
+
             }
             else {
               this.errmsg = "手机号不存在！"
@@ -265,13 +267,14 @@ export default {
 </script>
 
 <style  scoped>
-.login_bg{
-    background: url("../hospital2.jpg") no-repeat;
-    background-size: 100% 100%;
-    top:0;
-    left: 0;
-    overflow-y: auto;
- }
+.login_bg {
+  background: url("../hospital2.jpg") no-repeat;
+  background-size: 100% 100%;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
 .content {
   width: 1060px;
   margin: 32px auto;
@@ -289,6 +292,7 @@ export default {
   position: relative;
   margin-right: 335px;
 }
+
 .login_pictures_picture {
   border: 1px solid #a0b1c4;
   position: absolute;
@@ -298,9 +302,9 @@ export default {
   height: 400px;
   _width: 100%;
   background-repeat: no-repeat;
-  background-position: right center; 
+  background-position: right center;
   opacity: 0.8;
- /* border-radius: 5px; */ 
+  /* border-radius: 5px; */
 }
 
 .xm_login_container {
@@ -314,7 +318,7 @@ export default {
   width: 334px;
   height: 387px;
   _height: 371px;
-  background:#ffffff; 
+  background: #ffffff;
   position: relative;
   z-index: 12;
   padding: 0;
@@ -326,7 +330,7 @@ export default {
   height: 50px;
   border-bottom: 1px solid #a0b1c4;
   background-color: #f9fbfe;
- /* border-radius: 6px 6px 0 6px; */
+  /* border-radius: 6px 6px 0 6px; */
   color: #333;
   width: 100%;
   font-size: 16px;
@@ -381,11 +385,12 @@ export default {
   margin: 0 5px;
 }
 
-.bottom_style  {
+.bottom_style {
   text-align: center;
   margin-top: 200px;
   margin-bottom: 42px;
 }
+
 a {
   text-decoration: none;
 }

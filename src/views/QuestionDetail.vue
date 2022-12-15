@@ -32,16 +32,17 @@ export default {
     },
     methods: {
         getAnswers() {
-            axios.get(`/api/answer/list?qId=${this.$route.params.qId}`).then((res) => {
-                this.postList = res.data
-                console.log(res.data)
-            }).catch(() => {
-                this.$message.error("请求失败")
-            })
+            axios.get(`/answer/list?qId=${this.$route.params.qId}`)
+                .then((res) => {
+                    this.postList = res.data
+                    console.log(res.data)
+                }).catch(() => {
+                    this.$message.error("请求失败")
+                })
         }
     },
     beforeMount() {
-        console.log(this.aId)
+        // console.log(this.aId)
     },
     mounted() {
         this.getAnswers()

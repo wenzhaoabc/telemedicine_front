@@ -140,10 +140,10 @@ onMounted(() => {
     document.onkeydown = () => {
         var key = window.event.keyCode
         if (key === 13) {
-            if (sendMed){
+            if (sendMed.value) {
                 sendOrder();
-                medicineList.value=[]
-                sendMed.value=false
+                medicineList.value = []
+                sendMed.value = false
             }
             else
                 sendMsg();
@@ -442,9 +442,9 @@ function addMedicine(item) {
 }
 function deleteMedicine(medicine) {
     medicineList.value = medicineList.value.filter(item => item != medicine)
-    console.log("list"+medicineList.value.length)
-    if(medicineList.value.length==0)
-        sendMed.value=false;
+    console.log("list" + medicineList.value.length)
+    if (medicineList.value.length == 0)
+        sendMed.value = false;
 }
 
 function handleOk() {
@@ -454,7 +454,7 @@ function handleOk() {
         advice: "一日" + dayCount.value + "次，一次" + onceCount.value + "片"
     }
     medicineList.value.push(meItem)
-    console.log("list"+medicineList.value.length)
+    console.log("list" + medicineList.value.length)
 }
 </script>
 

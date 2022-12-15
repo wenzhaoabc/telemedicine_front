@@ -159,7 +159,7 @@ export default {
         },
         getPostList: function () {
             let that = this
-            axios.get('/api/forum/qalist?offset=1&pagesize=1&userId=123456786').then((res) => {
+            axios.get('/forum/qalist?offset=1&pagesize=10&userId=123456786').then((res) => {
                 that.postList = res.data
                 console.log("res.")
                 console.log(res.data)
@@ -181,7 +181,7 @@ export default {
             if (this.articleList.length > 0) {
                 return
             } else {
-                axios.get(`/api/article/articleList?offset=1&pageSize=10&userId=${User.actor_id}`)
+                axios.get(`/article/articleList?offset=1&pageSize=10&userId=${User.actorId}`)
                     .then((res) => {
                         this.articleList = res.data
                         console.log('articlelist = ', res.data)
@@ -258,6 +258,7 @@ export default {
 .right-side {
     background-color: #FFF;
     padding: 10px;
+    height: 100vh;
 }
 
 .flex-center-father {

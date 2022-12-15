@@ -1,25 +1,30 @@
 <template>
     <div style="margin:0" @click="test">
-        <p class="time">{{singleMsg.createTime}}</p>
-        <div class="message-item flex" :class="{'me':singleMsg.senderId==info.actorId,'other':singleMsg.senderId!=info.actorId}">
+        <p class="time">{{ singleMsg.createTime }}</p>
+        <div class="message-item flex"
+            :class="{ 'me': singleMsg.senderId == info.actorId, 'other': singleMsg.senderId != info.actorId }">
             <div class="avator-box hvhd">
                 <a-avatar :size="30">
-                    <img v-if="info.actorId!=singleMsg.senderId" :src="props.avatar.avatar" alt="">
-                    <img v-if="info.actorId==singleMsg.senderId" :src="info.userAvatar" alt="">
+                    <img v-if="info.actorId != singleMsg.senderId" :src="props.avatar.avatar" alt="">
+                    <img v-if="info.actorId == singleMsg.senderId" :src="info.userAvatar" alt="">
                 </a-avatar>
             </div>
-            
+
             <div class="message-box flex_column">
                 <div class="cardcontain" style="text-align: right;">
                     <div>
-                        <div class="bubble_arrow absolute" :class="{'right':singleMsg.senderId==info.actorId,'left':singleMsg.senderId!=info.actorId}">
+                        <div class="bubble_arrow absolute"
+                            :class="{ 'right': singleMsg.senderId == info.actorId, 'left': singleMsg.senderId != info.actorId }">
                         </div>
-                        <div class="bubble_cont" :class="{'bcright':singleMsg.senderId==info.actorId,'bcleft':singleMsg.senderId!=info.actorId}">
+                        <div class="bubble_cont"
+                            :class="{ 'bcright': singleMsg.senderId == info.actorId, 'bcleft': singleMsg.senderId != info.actorId }">
                             <div class="card1">
-                                <p class="wordbreak puretext" v-if="(singleMsg.kind==0)">{{singleMsg.value}}</p>
-                                <img :src="singleMsg.value" v-if="(singleMsg.kind==1)" style="width:100px" >
-                                <audio :src="singleMsg.value" id="aud" ref="audio" controls="controls" v-if="(singleMsg.kind==2)"></audio>
-                                <a href="#" v-if="singleMsg.kind==3" @click="showMedicine" > <img :src="medision" alt="" style="width:100px" > </a>
+                                <p class="wordbreak puretext" v-if="(singleMsg.kind == 0)">{{ singleMsg.value }}</p>
+                                <img :src="singleMsg.value" v-if="(singleMsg.kind == 1)" style="width:100px">
+                                <audio :src="singleMsg.value" id="aud" ref="audio" controls="controls"
+                                    v-if="(singleMsg.kind == 2)"></audio>
+                                <a href="#" v-if="singleMsg.kind == 3" @click="showMedicine"> <img :src="medision"
+                                        alt="" style="width:100px"> </a>
                             </div>
                         </div>
                     </div>
@@ -28,55 +33,55 @@
         </div>
 
         <a-modal v-model:visible="visible" :footer="false">
-            <template #title>          
-            药单
+            <template #title>
+                药单
             </template>
-            <a-table :columns="columns" :data="list" :pagination="false" /> 
+            <a-table :columns="columns" :data="list" :pagination="false" />
         </a-modal>
     </div>
 </template>
 
 <script lang="ts" setup>
-import {ref,onMounted,toRefs,reactive} from 'vue'
+import { ref, onMounted, toRefs, reactive } from 'vue'
 import { userInfo } from '@/stores/counter.js';
 import medision from "@/assets/medision.png"
 
-const info=userInfo();
-const visible=ref(false);
+const info = userInfo();
+const visible = ref(false);
 // const me=ref(true);
-var list=ref([]);
+var list = ref([]);
 const props = defineProps({
-  singleMsg: {
-    senderId:Number,
-    kind:Number,
-    value:String,
-    createTime:Date,
-  },
-  avatar:{
-    avatar:String
-  }
+    singleMsg: {
+        senderId: Number,
+        kind: Number,
+        value: String,
+        createTime: Date,
+    },
+    avatar: {
+        avatar: String
+    }
 })
 
 const columns = [
-      {
+    {
         title: '药品名称',
         dataIndex: 'name',
-      },
-      {
+    },
+    {
         title: '用法用量',
         dataIndex: 'advice',
-      },
-    ];
+    },
+];
 
 
-const {singleMsg} = toRefs(props)
-function test(){
+const { singleMsg } = toRefs(props)
+function test() {
     console.log(props.singleMsg.senderId);
 }
 
-function showMedicine(){
-    visible.value=true;
-    list.value=JSON.parse(singleMsg.value.value)
+function showMedicine() {
+    visible.value = true;
+    list.value = JSON.parse(singleMsg.value.value)
 }
 </script>
 
@@ -98,7 +103,7 @@ function showMedicine(){
     justify-content: flex-start;
 }
 
-.wordbreak{
+.wordbreak {
     word-break: break-word;
 }
 
@@ -118,7 +123,7 @@ function showMedicine(){
 }
 
 .bubble_cont {
-    
+
     text-align: left;
     border: 1px solid #e5e5e5;
     position: relative;
@@ -143,7 +148,7 @@ function showMedicine(){
     width: 0;
     height: 0;
     z-index: 99;
-    border: 5px solid rgba(0,0,0,0);
+    border: 5px solid rgba(0, 0, 0, 0);
     border-top-color: #fff;
 }
 
@@ -159,7 +164,7 @@ function showMedicine(){
     border-right-color: #fff;
     top: 15px;
     left: 3px;
-    
+
 }
 
 .flex {
@@ -172,6 +177,7 @@ function showMedicine(){
     -ms-flex-flow: row nowrap;
     flex-flow: row nowrap;
 }
+
 .right {
     border-top-color: #e5f3fd;
     border-left-color: #e5f3fd;

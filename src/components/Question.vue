@@ -54,16 +54,17 @@ export default {
     },
     methods: {
         async getQuesContent() {
-            await axios.get(`/api/question/?qId=${this.$props.qid}`)
+            await axios.get(`/question/?qId=${this.$props.qid}`)
                 .then((res) => {
                     this.question = res.data
-                    console.log('/api/question/q_id请求成功');
+                    console.log('/question/q_id请求成功');
                     console.log(res.data);
                 })
                 .catch(() => {
                     this.$message.error("网络请求失败，请刷新重试")
                 })
-            await axios.get(`/api/forum/userInfo?userId=${this.question.actorId}`)
+            console.log(this.question)
+            await axios.get(`/forum/userInfo?userId=${this.question.actorId}`)
                 .then((res) => {
                     this.quizzer = res.data
                     console.log("this.quizzer=", res.data)

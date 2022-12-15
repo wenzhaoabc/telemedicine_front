@@ -1,20 +1,15 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
+
+// import { userInfo } from '@/stores/counter.js';
+// const User = userInfo()
+
 export default {
-  setup() {
-    const images = [
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/cd7a1aaea8e1c5e3d26fe2591e561798.png~tplv-uwbnlip3yd-webp.webp',
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/6480dbc69be1b5de95010289787d64f1.png~tplv-uwbnlip3yd-webp.webp',
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/0265a04fddbd77a19602a15d9d55d797.png~tplv-uwbnlip3yd-webp.webp',
-    ];
-    const handleChange = (value) => {
-      console.log(value)
-    }
+  data() {
     return {
-      images,
-      handleChange
+      // avatar: User.photo
     }
-  },
+  }
 }
 </script>
 
@@ -32,28 +27,28 @@ export default {
         <a-divider direction="vertical" />
       </div> -->
       <div class="header-logo">
-        <img src="https://ydlunacommon-cdn.nosdn.127.net/1ed7a7858eabd4d407370a83d9209838.png" alt="">
+        <img src="/log.svg" alt="">
       </div>
       <div style="width:65% ;"></div>
       <div class="header-link">
         <a-link src="#" class="page-tag">Home</a-link>
-        <a-link src="#" class="page-tag">Serch</a-link>
+        <a-link src="#" class="page-tag">Forum</a-link>
         <a-link src="#" class="page-tag">INquiry</a-link>
         <a-link src="#" class="page-tag">Doctor</a-link>
         <router-link :to="'/myInfo'">
-        <a-avatar :style="{ backgroundColor: '#3370ff', marginRight: '60px' }">
-          <IconUser />
-        </a-avatar>
-      </router-link>
+          <a-avatar :style="{ backgroundColor: '#3370ff', marginRight: '60px' }">
+            <IconUser />
+          </a-avatar>
+        </router-link>
       </div>
     </a-layout-header>
-   <a-layout-content>
-    <router-view></router-view>
+    <a-layout-content>
+      <router-view></router-view>
     </a-layout-content>
   </a-layout>
 </template>
 
-<style>
+<style scoped>
 .layout-main {
   display: flex;
   height: 100vh;

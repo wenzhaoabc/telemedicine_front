@@ -107,7 +107,7 @@ export default {
     },
     methods: {
         getQuestionList() {
-            axios.get('/api/question/list')
+            axios.get('/question/list')
                 .then((res) => {
                     this.dataSource = res.data
                     this.paginationProps.total = this.dataSource.length
@@ -127,11 +127,11 @@ export default {
         changeMenuItem(itemid) {
             let url = ''
             if (itemid == 'recommend') {
-                url = '/api/question/list'
+                url = '/question/list'
             } else if (itemid == 'concern') {
-                url = "/api/question/list?userId=" + user.actor_id
+                url = "/question/list?userId=" + user.actor_id
             } else if (itemid == 'hot') {
-                url = `/api/question/list?userId=${user.actor_id}&hot=true`
+                url = `/question/list?userId=${user.actor_id}&hot=true`
             } else {
                 this.visible = true
             }

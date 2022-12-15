@@ -90,7 +90,7 @@ export default {
                 this.$message.error('标题不可为空')
                 return
             }
-            axios.post('/api/question', question)
+            axios.post('/question', question)
                 .then((res) => {
                     this.$message.success("提问成功")
                     let qId = res.data

@@ -126,7 +126,7 @@ export default {
         },
         // 获取用户对回答的点踩情况
         getUpDown() {
-            axios.get(`/api/forum/vote/answer/${this.$props.qaitem.answer.a_id}`)
+            axios.get(`/forum/vote/answer/${this.$props.qaitem.answer.a_id}`)
                 .then((res) => {
                     this.UpDown.isHelpful = res.data.up
                     this.UpDown.isUnhelpful = res.data.down
@@ -148,10 +148,10 @@ export default {
                 return
             }
             let data = {
-                actor_id: 'actor_id', a_id: this.qaitem.answer.a_id, type: 'answer',
+                actorId: actor.actorId, answerId: this.qaitem.answer.aId, type: 'answer',
                 up: this.UpDown.helpful, down: this.UpDown.unHelpful
             }
-            axios.post('/api/forum/vote/answer/', data)
+            axios.post('/action/answer/', data)
                 .then((res) => {
                     console.log(status + '成功')
                 }).catch((err) => {
